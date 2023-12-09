@@ -8,10 +8,22 @@ interface Props {
   //"children" prop <Alert>Hello World<Alert/>
   //Its type is ReactNode so it also accepts Html tags, we can use string as type here as well, in that case on string will be allowed as child to this component.
   children: ReactNode;
+  onClose: () => void;
 }
 
-const Alert = ({ children }: Props) => {
-  return <div className="alert alert-primary">{children}</div>;
+const Alert = ({ children, onClose }: Props) => {
+  return (
+    <div className="alert alert-primary alert-dismissible">
+      {children}
+      <button
+        type="button"
+        className="btn-close"
+        onClick={onClose}
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
+    </div>
+  );
 };
 
 export default Alert;

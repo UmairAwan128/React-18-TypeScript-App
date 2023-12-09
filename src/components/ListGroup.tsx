@@ -16,10 +16,12 @@ interface Props {
 //this is another benifit of Type Script using with React.
 function ListGroup({ items, heading, onSelectItem }: Props) {
   // State Hook
+  //2nd is an action to update state value so start it with "Set" followed by state prop Name.
   const [selectedIndex, setSelectedIndex] = useState(-1);
 
   //items = [];
   const getMessage = () => {
+    //use && its more readable then conditional operator, in cases when false condition returns null
     return items.length === 0 && <p>No Items found</p>;
   };
 
