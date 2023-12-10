@@ -1,11 +1,8 @@
+import produce from "immer";
+import React from "react";
 import { useState } from "react";
-import Alert from "./components/Alert";
-import Button from "./components/Button";
-import ListGroup from "./components/ListGroup";
-import Like from "./components/Like";
-import ImPureComponent from "./components/ImPureComponent";
 
-function App() {
+const StateSupportedTypes = () => {
   //6. Ways to configure a state.
   //Prefer creating seperate state variables
   const [isLoading, setLoading] = useState(false);
@@ -28,6 +25,12 @@ function App() {
 
   //Array
   const [tags, setTags] = useState(["happy", "cheerful"]);
+
+  //Array of Objects
+  const [bugs, setBugs] = useState([
+    { id: 1, title: "Bug 1", fixed: false },
+    { id: 2, title: "Bug 2", fixed: false },
+  ]);
 
   const handleClick = () => {
     // To update a state object, provide react a new object not the old one with updated value.
@@ -53,8 +56,21 @@ function App() {
     setTags([...tags, "exciting"]);
     //remove an element
     setTags(tags.filter((tag) => tag !== "happy"));
-    //update specific index happy to happiness
+    //update specific index, so traverse array and see if its happy update to happiness return happiness else return as it is.
     setTags(tags.map((tag) => (tag === "happy" ? "hapiness" : tag)));
+
+    //Similarly Update Array of object specific bug to fixed, so traverser array, find specific bug by id and
+    //now create new object with fixed to true and rest as it is with spread operator,
+    setBugs(bugs.map((bug) => (bug.id === 1 ? { ...bug, fixed: true } : bug)));
+    //as the application and state grows, it become complex to update, so we have a library that can help us called "npm i immer".
+    //To do the same thing or marking the first bug fixed using immer its much readable code.
+    //so we call a function produce and by convention we name the parmeter of the function as "draft". then we write a logic like updating a regular JS object.
+    setBugs(
+      produce((draft) => {
+        const bug = draft.find((bug) => bug.id === 1);
+        if (bug) bug.fixed = true;
+      })
+    );
   };
 
   //6. State Object with multiple props
@@ -64,56 +80,6 @@ function App() {
       <button onClick={handleClick}>Click Me</button>
     </div>
   );
+};
 
-  // //5. The following is not a pure functional component, avoid creating such components.
-  // return (
-  //   <>
-  //     <ImPureComponent />
-  //     <ImPureComponent />
-  //     <ImPureComponent />
-  //   </>
-  // );
-
-  // 3. Alert and Like Component
-  // const [alertVisible, setAlertVisibility] = useState(false);
-
-  // return (
-  //   <div>
-  //     {alertVisible && (
-  //       <Alert onClose={() => setAlertVisibility(false)}>My Alert</Alert>
-  //     )}
-  //     <Button color="primary" onClick={() => setAlertVisibility(true)}>
-  //       My Button
-  //     </Button>
-  //     <Like />
-  //   </div>
-  // );
-
-  //  2, Played with Alert
-  // return (
-  //   <div>
-  //     <Alert>Hello World</Alert>
-  //   </div>
-  // );
-
-  // 1, Played with List Group
-
-  // let items = ["New York", "San Fransico", "Tokyo", "London"];
-
-  // //Handling Select Item Event - Convention Name of event is Like start with word "handle" followed by Event "SelectItem"
-  // const handleSelectItem = (item: string) => {
-  //   console.log(item);
-  // };
-
-  // return (
-  //   <div>
-  //     <ListGroup
-  //       items={items}
-  //       heading={"Cities"}
-  //       onSelectItem={handleSelectItem}
-  //     />
-  //   </div>
-  // );
-}
-
-export default App;
+export default StateSupportedTypes;
